@@ -1,0 +1,1 @@
+Scaffold-DbContext "Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=AspNetCoreMVCExample;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -Force -OutputDir Models
