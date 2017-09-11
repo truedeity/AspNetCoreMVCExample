@@ -8,11 +8,12 @@ namespace CoreFamework.Security
 {
     public partial class User : IdentityUser<int>
 	{
-        public User()
+		public User() 
         {
             UserLogin = new HashSet<UserLogin>();
             UserRole = new HashSet<UserRole>();
-        }
+
+		}
 
 		[Column("UserId")]
         public new int Id { get; set; }

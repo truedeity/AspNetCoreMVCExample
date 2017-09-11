@@ -106,7 +106,7 @@ namespace CoreFamework.Security
 
         public async Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(user.EntityGuid.ToString());
+            return await Task.FromResult(user.Id.ToString());
         }
 
         public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)

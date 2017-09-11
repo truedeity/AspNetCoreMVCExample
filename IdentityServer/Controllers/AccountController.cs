@@ -10,24 +10,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using AspNetCoreMVCExample.Models;
-using AspNetCoreMVCExample.Models.AccountViewModels;
-using AspNetCoreMVCExample.Services;
+using IdentityServer.Models;
+using IdentityServer.Models.AccountViewModels;
+using IdentityServer.Services;
 
-namespace AspNetCoreMVCExample.Controllers
+namespace IdentityServer.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly UserManager<CoreFamework.Security.User> _userManager;
-        private readonly SignInManager<CoreFamework.Security.User> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 
         public AccountController(
-            UserManager<CoreFamework.Security.User> userManager,
-            SignInManager<CoreFamework.Security.User> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger)
         {
@@ -220,23 +220,14 @@ namespace AspNetCoreMVCExample.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new CoreFamework.Security.User {
-					UserName = model.Email,
-					NormalizedEmail = model.Email.ToUpperInvariant(),
-					NormalizedUserName = model.Email.ToUpperInvariant(),
-					Email = model.Email,
-					CreatedDt = DateTime.Now,
-					CreatedByUserId = -1,
-					LastUpdateGuid = Guid.NewGuid(),
-					EntityGuid = Guid.NewGuid()
-				};
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.EmailConfirmationLink(user.Id.ToString(), code, Request.Scheme);
+                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -319,7 +310,7 @@ namespace AspNetCoreMVCExample.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new CoreFamework.Security.User { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -379,7 +370,7 @@ namespace AspNetCoreMVCExample.Controllers
                 // For more information on how to enable account confirmation and password reset please
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.ResetPasswordCallbackLink(user.Id.ToString(), code, Request.Scheme);
+                var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
                 await _emailSender.SendEmailAsync(model.Email, "Reset Password",
                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
