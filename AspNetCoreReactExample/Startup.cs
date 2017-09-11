@@ -1,18 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using AspNetCoreMVCExample.Models;
-using AspNetCoreMVCExample.Services;
-using CoreFamework.Security;
 
-namespace AspNetCoreMVCExample
+namespace AspNetCoreReactExample
 {
     public class Startup
     {
@@ -26,18 +22,6 @@ namespace AspNetCoreMVCExample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SecurityContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<SecurityContext>()
-				.AddUserStore<UserStore>()
-				.AddUserManager<CoreFamework.Security.UserManager<User>>()
-                .AddDefaultTokenProviders();
-
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
-
             services.AddMvc();
         }
 
@@ -47,8 +31,11 @@ namespace AspNetCoreMVCExample
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                {
+                    HotModuleReplacement = true,
+                    ReactHotModuleReplacement = true
+                });
             }
             else
             {
@@ -57,13 +44,15 @@ namespace AspNetCoreMVCExample
 
             app.UseStaticFiles();
 
-            app.UseAuthentication();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Home", action = "Index" });
             });
         }
     }

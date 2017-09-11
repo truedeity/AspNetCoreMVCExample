@@ -15,8 +15,13 @@ using Microsoft.EntityFrameworkCore;
 namespace CoreFamework.Security
 {
 
-    public sealed class UserStore : IUserStore<User>, IUserPasswordStore<User>, IUserLoginStore<User>
-    {
+    public sealed class UserStore : 
+		IUserStore<User>, 
+		IUserPasswordStore<User>, 
+		IUserLoginStore<User>, 
+		IUserPhoneNumberStore<User>, 
+		IUserAuthenticatorKeyStore<User>
+	{
         private SecurityContext _context;
 
         public UserStore(SecurityContext context)
@@ -75,7 +80,7 @@ namespace CoreFamework.Security
 
         public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
         }
 
         public async Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
@@ -88,7 +93,13 @@ namespace CoreFamework.Security
             return await _context.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName);
         }
 
-        public async Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken)
+		public Task<string> GetAuthenticatorKeyAsync(User user, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
+			//return Task.FromResult(user)
+		}
+
+		public async Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken)
         {
             var userLoginInfos = user.UserLogin.Select(ul => new UserLoginInfo(ul.LoginProvider, ul.ProviderKey, ul.LoginProvider)).ToList();
             return await Task.FromResult<IList<UserLoginInfo>>(userLoginInfos);
@@ -104,7 +115,17 @@ namespace CoreFamework.Security
             return Task.FromResult(user.PasswordHash);
         }
 
-        public async Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
+		public Task<string> GetPhoneNumberAsync(User user, CancellationToken cancellationToken)
+		{
+			return Task.FromResult(user.PhoneNumber);
+		}
+
+		public Task<bool> GetPhoneNumberConfirmedAsync(User user, CancellationToken cancellationToken)
+		{
+			return Task.FromResult(user.PhoneNumberConfirmed);
+		}
+
+		public async Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
             return await Task.FromResult(user.Id.ToString());
         }
@@ -128,7 +149,12 @@ namespace CoreFamework.Security
 
         }
 
-        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
+		public Task SetAuthenticatorKeyAsync(User user, string key, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
             return Task.FromResult(0);
         }
@@ -139,7 +165,19 @@ namespace CoreFamework.Security
             return Task.FromResult(0);
         }
 
-        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+		public Task SetPhoneNumberAsync(User user, string phoneNumber, CancellationToken cancellationToken)
+		{
+			user.PhoneNumber = phoneNumber;
+			return Task.FromResult(0);
+		}
+
+		public Task SetPhoneNumberConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
+		{
+			user.PhoneNumberConfirmed = confirmed;
+			return Task.FromResult(0);
+		}
+
+		public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
             return new Task(() => { user.UserName = userName; });
         }

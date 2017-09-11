@@ -13,12 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreFramework", "CoreFramew
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{DAD7C91D-27EA-43FA-8D62-98C6CB83F777}"
 	ProjectSection(SolutionItems) = preProject
-		TextFile1.txt = TextFile1.txt
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{AD1D60F9-774A-405F-AA0A-FABD111A3E91}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ids4AspNetIdentity", "Ids4AspNetIdentity\Ids4AspNetIdentity.csproj", "{B862FC38-5E88-4835-BD22-6AEB7B06F5E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreReactExample", "AspNetCoreReactExample\AspNetCoreReactExample.csproj", "{44694254-BFAB-4621-A5FD-49342297E86B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{B862FC38-5E88-4835-BD22-6AEB7B06F5E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B862FC38-5E88-4835-BD22-6AEB7B06F5E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B862FC38-5E88-4835-BD22-6AEB7B06F5E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44694254-BFAB-4621-A5FD-49342297E86B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44694254-BFAB-4621-A5FD-49342297E86B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44694254-BFAB-4621-A5FD-49342297E86B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44694254-BFAB-4621-A5FD-49342297E86B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
